@@ -19,7 +19,7 @@ import asyncio
 
 from tool_filesearch import *
 from tool_search import *
-
+from tool_noretrieval import *
 
 OBS_START = '<tool_response>'
 OBS_END = '\n</tool_response>'
@@ -29,6 +29,7 @@ MAX_LLM_CALL_PER_RUN = int(os.getenv('MAX_LLM_CALL_PER_RUN', 100))
 TOOL_CLASS = [
     FileSearchTool(),
     #Search(),
+    #NoRetrievalTool(),
 ]
 TOOL_MAP = {tool.name: tool for tool in TOOL_CLASS}
 
