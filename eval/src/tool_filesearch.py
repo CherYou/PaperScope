@@ -115,9 +115,9 @@ class FileSearchEngine:
                 if file_path.lower().endswith('.md'):
                     text = self.extract_text_from_md(file_path)
                     img = None
-                # elif file_path.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff')):
-                #     text = None 
-                #     img = self.extract_text_from_image(file_path)
+                elif file_path.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff')):
+                    text = None 
+                    img = self.extract_text_from_image(file_path)
                 else:
                     continue
                 
@@ -255,14 +255,6 @@ class FileSearchEngine:
                         content = self.ocr_image(file_path)
                         summary = None
                     else:
-                        # OCR image to text
-                        # last_part = file_path.split("/")[-1]
-                        # image_path = file_path.replace(last_part,"images")
-                        # image_content = ""
-                        # for img in os.listdir(image_path):
-                        #     img_path = os.path.join(image_path, img)
-                        #     image_content += "Doc Image OCR" + self.ocr_image(img_path)
-                        # content = image_content + content
                         file_type = "paper"
                         summary = content[:300] + "..." if len(content) > 300 else content
                     
@@ -356,7 +348,7 @@ class FileSearchTool(BaseTool):
                     "file_path": result["file_path"],
                     "file_type": result["file_type"],
                     "relevance_score": round(result["score"], 4),
-                    "content": result["content"][:10000],
+                    "content": result["content"],
                     "summary": result["summary"]
                 }
                 
