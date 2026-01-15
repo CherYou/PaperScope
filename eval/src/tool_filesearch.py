@@ -35,13 +35,13 @@ class FileSearchEngine:
         self.total_docs = 0
         
         # Initialize DeepSeek-OCR
-        # ocr_model_name = '/share/project/xionglei/code/models/deepseek-ai/DeepSeek-OCR'
-        # self.orc_model = AutoModel.from_pretrained(ocr_model_name, _attn_implementation='flash_attention_2', trust_remote_code=True, use_safetensors=True)
-        # self.ocr_tokenizer = AutoTokenizer.from_pretrained(ocr_model_name, trust_remote_code=True)
-        # self.ocr_model = self.orc_model.eval().cuda().to(torch.bfloat16)
+        ocr_model_name = './models/deepseek-ai/DeepSeek-OCR'
+        self.orc_model = AutoModel.from_pretrained(ocr_model_name, _attn_implementation='flash_attention_2', trust_remote_code=True, use_safetensors=True)
+        self.ocr_tokenizer = AutoTokenizer.from_pretrained(ocr_model_name, trust_remote_code=True)
+        self.ocr_model = self.orc_model.eval().cuda().to(torch.bfloat16)
 
         # Initialize Ops-MM-embedding model for multimodal embeddings
-        model_path = "/share/project/xionglei/code/models/opensearch-ai/Ops-MM-embedding-v1-2B"
+        model_path = "./models/opensearch-ai/Ops-MM-embedding-v1-2B"
         logging.info(f"Initializing Ops-MM-embedding model from {model_path}")
         self.embedding_model = OpsMMEmbeddingV1(
             model_name=model_path,
@@ -58,7 +58,7 @@ class FileSearchEngine:
     def ocr_image(self,image):
         prompt = "<image>\nCaption this image. "
         #print(image)
-        output_path = "/share/project/xionglei/code/eval/src/ocroutput"
+        output_path = "eval/src/ocroutput"
         res = self.ocr_model.infer(self.ocr_tokenizer, 
         prompt=prompt, 
         image_file=image, 
@@ -253,7 +253,7 @@ class FileSearchEngine:
                     if '/images/' in filename:
                         file_type = "image"
                         content = self.ocr_image(file_path)
-                        summary = None
+                        summary = "this is an image"
                     else:
                         file_type = "paper"
                         summary = content[:300] + "..." if len(content) > 300 else content
