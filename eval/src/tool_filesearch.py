@@ -35,17 +35,17 @@ class FileSearchEngine:
         self.total_docs = 0
         
         # Initialize DeepSeek-OCR
-        ocr_model_name = './models/deepseek-ai/DeepSeek-OCR'
+        ocr_model_name = '/share/project/xionglei/code/models/deepseek-ai/DeepSeek-OCR'
         self.orc_model = AutoModel.from_pretrained(ocr_model_name, _attn_implementation='flash_attention_2', trust_remote_code=True, use_safetensors=True)
         self.ocr_tokenizer = AutoTokenizer.from_pretrained(ocr_model_name, trust_remote_code=True)
         self.ocr_model = self.orc_model.eval().cuda().to(torch.bfloat16)
 
         # Initialize Ops-MM-embedding model for multimodal embeddings
-        model_path = "./models/opensearch-ai/Ops-MM-embedding-v1-2B"
+        model_path = "/share/project/xionglei/code/models/opensearch-ai/Ops-MM-embedding-v1-2B"
         logging.info(f"Initializing Ops-MM-embedding model from {model_path}")
         self.embedding_model = OpsMMEmbeddingV1(
             model_name=model_path,
-            device="cuda:3" if torch.cuda.is_available() else "cpu",
+            device="cuda:1" if torch.cuda.is_available() else "cpu",
             attn_implementation="flash_attention_2"
         )
         
@@ -58,7 +58,7 @@ class FileSearchEngine:
     def ocr_image(self,image):
         prompt = "<image>\nCaption this image. "
         #print(image)
-        output_path = "eval/src/ocroutput"
+        output_path = "./eval/src/ocroutput"
         res = self.ocr_model.infer(self.ocr_tokenizer, 
         prompt=prompt, 
         image_file=image, 
@@ -253,8 +253,9 @@ class FileSearchEngine:
                     if '/images/' in filename:
                         file_type = "image"
                         content = self.ocr_image(file_path)
-                        summary = "this is an image"
+                        summary = None
                     else:
+
                         file_type = "paper"
                         summary = content[:300] + "..." if len(content) > 300 else content
                     
@@ -305,6 +306,127 @@ class FileSearchTool(BaseTool):
         corpus_path = "/share/project/xionglei/code/doc_parse/output"
         self.search_engine = FileSearchEngine(corpus_path)
     
+    def _split_content_into_chunks(self, content: str, chunk_size: int = 500, overlap: int = 100) -> List[str]:
+        """
+        将文本内容分块
+        
+        Args:
+            content: 要分块的文本内容
+            chunk_size: 每块的字符数
+            overlap: 块之间的重叠字符数
+            
+        Returns:
+            文本块列表
+        """
+        if not content:
+            return []
+        
+        chunks = []
+        start = 0
+        content_length = len(content)
+        
+        while start < content_length:
+            end = min(start + chunk_size, content_length)
+            chunk = content[start:end]
+            chunks.append(chunk)
+            
+            # 如果已经到达末尾，退出循环
+            if end >= content_length:
+                break
+            
+            # 下一个块的起始位置，考虑重叠
+            start = end - overlap
+        
+        return chunks
+    
+    def _rerank_content_chunks(self, query: str, content: str, max_chars: int = 10000) -> str:
+        """
+        对内容块进行相似度重排，返回最相关的块
+        
+        Args:
+            query: 查询文本
+            content: 文档内容
+            max_chars: 返回内容的最大字符数
+            
+        Returns:
+            重排后的最相关内容片段
+        """
+        if not content:
+            return ""
+        
+        # 如果内容已经小于限制，直接返回
+        if len(content) <= max_chars:
+            return content
+        
+        try:
+            # 将内容分块
+            chunks = self._split_content_into_chunks(content, chunk_size=500, overlap=100)
+            
+            if not chunks:
+                return content[:max_chars]
+            
+            # 生成查询的 embedding
+            query_embedding = self.search_engine.embedding_model.get_text_embeddings(
+                texts=[query],
+                batch_size=1,
+                show_progress=False
+            )
+            query_embedding = query_embedding.float().cpu().numpy().astype('float32')
+            
+            # 生成所有块的 embeddings（批量处理以提高效率）
+            batch_size = 16
+            chunk_embeddings_list = []
+            
+            for i in range(0, len(chunks), batch_size):
+                batch_chunks = chunks[i:i + batch_size]
+                batch_embeddings = self.search_engine.embedding_model.get_text_embeddings(
+                    texts=batch_chunks,
+                    batch_size=batch_size,
+                    show_progress=False
+                )
+                batch_embeddings = batch_embeddings.float().cpu().numpy().astype('float32')
+                chunk_embeddings_list.append(batch_embeddings)
+            
+            # 合并所有 embeddings
+            chunk_embeddings = np.vstack(chunk_embeddings_list)
+            
+            # 计算相似度（内积）
+            similarities = np.dot(chunk_embeddings, query_embedding.T).flatten()
+            
+            # 按相似度排序块的索引
+            sorted_indices = np.argsort(similarities)[::-1]
+            
+            # 选择最相关的块，直到达到字符限制
+            selected_chunks = []
+            total_chars = 0
+            
+            for idx in sorted_indices:
+                chunk = chunks[idx]
+                chunk_len = len(chunk)
+                
+                # 如果添加这个块不会超过限制，就添加它
+                if total_chars + chunk_len <= max_chars:
+                    selected_chunks.append((idx, chunk))
+                    total_chars += chunk_len
+                else:
+                    # 如果还有空间，添加部分内容
+                    remaining_space = max_chars - total_chars
+                    if remaining_space > 0:
+                        selected_chunks.append((idx, chunk[:remaining_space]))
+                        total_chars += remaining_space
+                    break
+            
+            # 按原始顺序重新排列选中的块，以保持文本连贯性
+            selected_chunks.sort(key=lambda x: x[0])
+            reranked_content = " ".join([chunk for _, chunk in selected_chunks])
+            
+            return reranked_content
+            
+        except Exception as e:
+            logging.warning(f"Error in reranking chunks: {e}")
+            # 出错时返回前 max_chars 个字符
+            return content[:max_chars]
+    
     def call(self, params: str, **kwargs) -> str:
         """
         Search for files based on the query
@@ -341,14 +463,22 @@ class FileSearchTool(BaseTool):
                 })
             
             # Format results with file paths and content
+            # 新增：对每个 content 进行相似度重排
             formatted_results = []
             for result in results:
+                # 对内容进行相似度重排，限制在 10000 字符以内
+                reranked_content = self._rerank_content_chunks(
+                    query=query, 
+                    content=result["content"], 
+                    max_chars=10000
+                )
+                
                 formatted_result = {
                     "filename": result["filename"],
                     "file_path": result["file_path"],
                     "file_type": result["file_type"],
                     "relevance_score": round(result["score"], 4),
-                    "content": result["content"],
+                    "content": reranked_content,  # 使用重排后的内容
                     "summary": result["summary"]
                 }
                 
