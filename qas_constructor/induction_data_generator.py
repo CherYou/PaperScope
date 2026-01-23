@@ -11,12 +11,12 @@ from typing import Dict, List, Any, Optional
 from openai import OpenAI
 
 # 添加paper_lookup路径
-sys.path.append("paper_process")
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", "paper_process"))
 try:
     from paper_lookup import PaperLookup
 except ImportError:
     # 简单的PaperLookup实现作为后备
-    print("Warning: Could not import PaperLookup from ./paper_process. Using fallback implementation.")
+    print("Warning: Could not import PaperLookup. Using fallback implementation.")
     class PaperLookup:
         def __init__(self, jsonl_path):
             self.index = {}
@@ -232,12 +232,12 @@ Example Output Format:
 
 def main():
     parser = argparse.ArgumentParser(description="生成Induction QA数据")
-    parser.add_argument("--input", "-i", default="xxxx.jsonl", help="输入文件路径")
-    parser.add_argument("--output", "-o", default="./results/induction_xxxx.jsonl", help="输出文件路径")
-    parser.add_argument("--api_key", default='', help="OpenAI API密钥")
-    parser.add_argument("--base_url", default="", help="OpenAI API基础URL")
-    parser.add_argument("--model", default="gpt-5", help="使用的模型名称")
-    parser.add_argument("--lookup_jsonl", "-l", default="paper_process/paper_map/xxxx.jsonl", help="用于查找PDF链接的JSONL文件路径")
+    parser.add_argument("--input", "-i", default="./output/selected_papers/results.jsonl", help="输入文件路径")
+    parser.add_argument("--output", "-o", default="./qa_constructor/induction_data_constructor/results/induction.jsonl", help="输出文件路径")
+    parser.add_argument("--api_key", default=os.getenv("OPENAI_API_KEY", ""), help="OpenAI API密钥")
+    parser.add_argument("--base_url", default=os.getenv("OPENAI_BASE_URL", ""), help="OpenAI API基础URL")
+    parser.add_argument("--model", default="gpt-4", help="使用的模型名称")
+    parser.add_argument("--lookup_jsonl", "-l", default="./paper_process/paper_map/paper_map.jsonl", help="用于查找PDF链接的JSONL文件路径")
     parser.add_argument("--max_entries", type=int, help="最大处理条目数（用于测试）")
     
     args = parser.parse_args()

@@ -9,7 +9,7 @@ import os
 from typing import Dict, List, Any, Optional
 from openai import OpenAI
 import sys
-sys.path.append("/share/project/xionglei/code/paper_process")
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", "paper_process"))
 from paper_lookup import PaperLookup
 
 
@@ -337,10 +337,10 @@ def main():
     parser = argparse.ArgumentParser(description="生成基于induction文件的solution QA对")
     parser.add_argument("--input", "-i", required=True, help="输入的induction JSONL文件路径")
     parser.add_argument("--output", "-o", default='./results/solution.jsonl', help="输出的QA对JSONL文件路径")
-    parser.add_argument("--api_key", default='', help="OpenAI API密钥")
-    parser.add_argument("--base_url", default="", help="OpenAI API基础URL")
-    parser.add_argument("--model", default="gpt-5", help="使用的模型名称")
-    parser.add_argument("--lookup_jsonl", "-l", default="/paper_process/paper_map/xxxx.jsonl", help="用于查找PDF链接的JSONL文件路径")
+    parser.add_argument("--api_key", default=os.getenv("OPENAI_API_KEY", ""), help="OpenAI API密钥")
+    parser.add_argument("--base_url", default=os.getenv("OPENAI_BASE_URL", ""), help="OpenAI API基础URL")
+    parser.add_argument("--model", default="gpt-4", help="使用的模型名称")
+    parser.add_argument("--lookup_jsonl", "-l", default="./paper_process/paper_map/paper_map.jsonl", help="用于查找PDF链接的JSONL文件路径")
     parser.add_argument("--max_entries", type=int, help="最大处理条目数（用于测试）")
     
     args = parser.parse_args()
