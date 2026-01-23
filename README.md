@@ -333,7 +333,7 @@ PaperScope 针对不同任务类型采用不同的评估指标：
 
 ```bibtex
 @article{paperscope2025,
-  title={PaperScope: A Multi-modal Multi-document Benchmark for Agentic Deep Research},
+  title={PaperScope: A Multi-Modal Multi-Document Benchmark for Agentic Deep Research Across Massive Scientific Papers},
   author={Lei Xiong,
 Huaying Yuan,
 Zheng Liu,
@@ -347,6 +347,7 @@ Zhao Cao},
 ## 🙏 致谢
 
 - [Qwen](https://github.com/QwenLM/Qwen) - 提供基础模型支持
+- [Tongyi deepresearch](https://github.com/Alibaba-NLP/DeepResearch) - 提供模型支持和代码借鉴
 - [MinerU](https://github.com/opendatalab/MinerU) - PDF 解析引擎
 - [Faiss](https://github.com/facebookresearch/faiss) - 向量检索库
 - [NetworkX](https://networkx.org/) - 图计算框架
