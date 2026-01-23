@@ -17,7 +17,7 @@ from mineru.backend.pipeline.model_json_to_middle_json import result_to_middle_j
 from mineru.backend.vlm.vlm_middle_json_mkcontent import union_make as vlm_union_make
 from mineru.utils.guess_suffix_or_lang import guess_suffix_by_path
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '3'
+os.environ['CUDA_VISIBLE_DEVICES'] = os.getenv('CUDA_VISIBLE_DEVICES', '0')
 def do_parse(
     output_dir,  # Output directory for storing parsing results
     pdf_file_names: list[str],  # List of PDF file names to be parsed
@@ -79,7 +79,7 @@ def do_parse(
             pdf_bytes = convert_pdf_bytes_to_bytes_by_pypdfium2(pdf_bytes, start_page_id, end_page_id)
             local_image_dir, local_md_dir = prepare_env(output_dir, pdf_file_name, parse_method)
             image_writer, md_writer = FileBasedDataWriter(local_image_dir), FileBasedDataWriter(local_md_dir)
-            middle_json, infer_result = vlm_doc_analyze(pdf_bytes, image_writer=image_writer, backend=backend, model_path="/share/project/xionglei/code/doc_parse/models/MinerU2.5-2509-1.2B",server_url=server_url)
+            middle_json, infer_result = vlm_doc_analyze(pdf_bytes, image_writer=image_writer, backend=backend, model_path=os.getenv("MINERU_MODEL_PATH", "MinerU2.5-2509-1.2B"),server_url=server_url)
 
             pdf_info = middle_json["pdf_info"]
 
@@ -217,11 +217,10 @@ def parse_doc(
 if __name__ == '__main__':
     # args
     __dir__ = os.path.dirname(os.path.abspath(__file__))
-    pdf_base_dir = '/share/project/xionglei/data/sciagent_docs'
-    #pdf_files_dir = '/share/project/xionglei/data/organized_papers/ICLR2025_papers/alignment_fairness_safety_privacy_and_societal_considerations/0BujOfTqab'
+    pdf_base_dir = os.getenv("PDF_BASE_DIR", "./data/papers")
     
-    output_base_dir = './output_sciagent'
-    output_dir = os.path.join(output_base_dir,pdf_base_dir.split('/')[-3]+'_'+pdf_base_dir.split('/')[-2])
+    output_base_dir = './output'
+    output_dir = os.path.join(output_base_dir, os.path.basename(pdf_base_dir))
     print(output_dir)
     pdf_suffixes = ["pdf"]
     image_suffixes = ["png", "jpeg", "jp2", "webp", "gif", "bmp", "jpg"]
