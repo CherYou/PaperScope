@@ -18,7 +18,7 @@ from typing import Any, Dict, List, Set, Tuple
 import os
 import time
 
-os.environ["CUDA_VISIBLE_DEVICES"] = ""
+os.environ["CUDA_VISIBLE_DEVICES"] = os.getenv("CUDA_VISIBLE_DEVICES", "0")
 
 class UnionFind:
     def __init__(self, nodes):

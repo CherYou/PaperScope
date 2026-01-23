@@ -22,7 +22,7 @@ except ImportError:
     logger = logging.getLogger(__name__)
     logger.warning("vLLM未安装，无法使用本地模型加速。请安装vLLM: pip install vllm")
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "6,7"
+os.environ["CUDA_VISIBLE_DEVICES"] = os.getenv("CUDA_VISIBLE_DEVICES", "0,1")
 # 配置日志
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -52,10 +52,10 @@ class PaperEntityExtractor:
         # 根据选择初始化不同的模型
         if not self.use_local_model:
             self.client = OpenAI(
-                api_key="", 
-                base_url="",
+                api_key=os.getenv("OPENAI_API_KEY", ""), 
+                base_url=os.getenv("OPENAI_BASE_URL", ""),
             )
-            self.model_name = ""
+            self.model_name = os.getenv("MODEL_NAME", "")
         else:
             # 本地模型将在首次调用时初始化
             self.vllm_model = None
@@ -155,7 +155,7 @@ class PaperEntityExtractor:
         
         try:
             # 初始化vLLM模型（如果还未初始化）
-            model_name = "/share/project/xionglei/code/models/Qwen/Qwen3-32B"
+            model_name = os.getenv("VLLM_MODEL_PATH", "Qwen/Qwen3-32B")
             if not hasattr(self, 'vllm_model') or self.vllm_model is None:
 
                 
@@ -435,13 +435,13 @@ def main():
     parser.add_argument('--use-local', action='store_true', 
                        help='使用本地vLLM模型进行实体提取（需要安装vLLM）')
     parser.add_argument('--jsonl-dir', type=str, 
-                       default="/share/project/xionglei/code/paper_process/results/all_sampled_papers_500",
+                       default="./paper_process/results/all_sampled_papers_500",
                        help='JSONL文件目录路径')
     parser.add_argument('--pdf-dir', type=str,
-                       default="/share/project/xionglei/data/ICLR2025_papers", 
+                       default="./data/papers", 
                        help='PDF文件目录路径')
     parser.add_argument('--output', type=str,
-                       default="/share/project/xionglei/code/graph_constructor/output/entities/extracted_entities.jsonl",
+                       default="./output/entities/extracted_entities.jsonl",
                        help='输出文件路径')
     
     args = parser.parse_args()
