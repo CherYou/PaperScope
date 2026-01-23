@@ -57,7 +57,6 @@ paperscope/
 ├── doc_parse/                    # 文档解析模块
 │   └── doc_parse.py              # PDF论文解析
 ├── paper_process/                # 论文处理模块
-│   ├── organize_papers_by_session.py  # 按Session分类论文
 │   ├── paper_lookup.py           # 论文查询工具
 │   ├── paper_map_generator.py    # 论文映射生成器
 │   └── summary_papers.py         # 论文摘要生成
@@ -69,15 +68,9 @@ paperscope/
 │   ├── performance_monitor.py    # 性能监控
 │   └── visualize_graph.py        # 图可视化
 ├── qa_constructor/               # QA数据构建模块
-│   ├── reasoning_data_constructor/   # 推理数据构建
 │   ├── induction_data_constructor/   # 归纳数据构建
 │   ├── summary_data_constructor/     # 摘要数据构建
 │   └── solution_data_constructor/    # 解决方案数据构建
-├── qas_constructor/              # QA生成器
-│   ├── reasoning_data_generator.py   # 推理数据生成器
-│   ├── induction_data_generator.py   # 归纳数据生成器
-│   ├── summary_qa_generator.py       # 摘要QA生成器
-│   └── solution_qa_generator.py      # 解决方案QA生成器
 ├── eval/                         # 评估模块
 │   └── src/
 │       ├── react_agent.py        # ReAct Agent 实现
@@ -87,7 +80,6 @@ paperscope/
 │       ├── tool_filesearch.py    # 文件搜索工具
 │       ├── tool_search.py        # 网络搜索工具
 │       └── requirements.txt      # 依赖项
-├── MinerU/                       # PDF解析引擎（第三方）
 └── output/                       # 输出目录
     ├── entities/                 # 提取的实体
     ├── graphs/                   # 构建的图
