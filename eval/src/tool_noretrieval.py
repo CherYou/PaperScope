@@ -150,9 +150,9 @@ class NoRetrievalTool(BaseTool):
     def __init__(self):
         super().__init__()
         # QA数据集路径
-        qa_file_path = "/share/project/xionglei/code/qa_constructor/reasoning_data_constructor/results/reasoning_questions_reinforcement_learning.jsonl"
+        qa_file_path = os.getenv("QA_FILE_PATH", "./qa_constructor/reasoning_data_constructor/results/reasoning_questions.jsonl")
         # MD文档基础路径
-        docs_base_path = "/share/project/xionglei/code/doc_parse/output/ICLR2025_papers_reinforcement_learning"
+        docs_base_path = os.getenv("DOCS_BASE_PATH", "./doc_parse/output")
         
         self.engine = NoRetrievalEngine(qa_file_path, docs_base_path)
     

@@ -35,13 +35,13 @@ class FileSearchEngine:
         self.total_docs = 0
         
         # Initialize DeepSeek-OCR
-        ocr_model_name = '/share/project/xionglei/code/models/deepseek-ai/DeepSeek-OCR'
+        ocr_model_name = os.getenv("OCR_MODEL_PATH", "deepseek-ai/DeepSeek-OCR")
         self.orc_model = AutoModel.from_pretrained(ocr_model_name, _attn_implementation='flash_attention_2', trust_remote_code=True, use_safetensors=True)
         self.ocr_tokenizer = AutoTokenizer.from_pretrained(ocr_model_name, trust_remote_code=True)
         self.ocr_model = self.orc_model.eval().cuda().to(torch.bfloat16)
 
         # Initialize Ops-MM-embedding model for multimodal embeddings
-        model_path = "/share/project/xionglei/code/models/opensearch-ai/Ops-MM-embedding-v1-2B"
+        model_path = os.getenv("EMBEDDING_MODEL_PATH", "opensearch-ai/Ops-MM-embedding-v1-2B")
         logging.info(f"Initializing Ops-MM-embedding model from {model_path}")
         self.embedding_model = OpsMMEmbeddingV1(
             model_name=model_path,
@@ -303,7 +303,7 @@ class FileSearchTool(BaseTool):
     def __init__(self):
         super().__init__()
         # Initialize search engine with corpus path
-        corpus_path = "/share/project/xionglei/code/doc_parse/output"
+        corpus_path = os.getenv("CORPUS_PATH", "./doc_parse/output")
         self.search_engine = FileSearchEngine(corpus_path)
     
     def _split_content_into_chunks(self, content: str, chunk_size: int = 500, overlap: int = 100) -> List[str]:

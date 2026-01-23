@@ -10,8 +10,8 @@ import uuid
 import os
 
 
-BOCHA_API_KEY = ""
-BOCHA_API_URL = ""
+BOCHA_API_KEY = os.getenv("BOCHA_API_KEY", "")
+BOCHA_API_URL = os.getenv("BOCHA_API_URL", "")
 
 
 @register_tool("search", allow_overwrite=True)

@@ -58,15 +58,11 @@ class MultiTurnReactAgent(FnCallAgent):
             openai_api_key = "EMPTY"
             openai_api_base = f"http://127.0.0.1:{planning_port}/v1"
         else:
-            #openai_api_key = "" #new ai key
-            #openai_api_key = "" #deepseek ai key
-            #openai_api_key = "" #modelscope key
-            #openai_api_key = "" #qwen key
-            #openai_api_key = "" #moonshot key
-            openai_api_key = "" #glm4.5v
+            # Configure your API key here or use environment variable
+            openai_api_key = os.getenv("OPENAI_API_KEY", "")
             openai_api_base = planning_port
 
-            self.llm_local_path = "models/Qwen/WebWatcher-32B"
+            self.llm_local_path = os.getenv("MODEL_PATH", "models/Qwen/WebWatcher-32B")
 
         print(f'use planning_port: {planning_port}')
         client = OpenAI(

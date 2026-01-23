@@ -26,13 +26,13 @@ class EvalScorer:
             knowledge_file: solution类问题的知识文件路径
             openai_api_key: OpenAI API密钥，如果不提供则从环境变量获取
         """
-        self.results_dir = ""
-        self.knowledge_file = ""
+        self.results_dir = os.getenv("RESULTS_DIR", "")
+        self.knowledge_file = os.getenv("KNOWLEDGE_FILE", "")
         self.knowledge_data = self._load_knowledge_data()
         
         self.client = OpenAI(
-            api_key="", # 
-            base_url="",
+            api_key=os.getenv("OPENAI_API_KEY", ""),
+            base_url=os.getenv("OPENAI_BASE_URL", ""),
         )
 
     def _load_knowledge_data(self) -> Dict[str, Any]:
@@ -501,7 +501,7 @@ def main():
     all_results = scorer.evaluate_all_results()
     
     # 保存结果
-    output_file = "/share/project/xionglei/code/eval/src/evaluation_results.json"
+    output_file = os.getenv("OUTPUT_FILE", "evaluation_results.json")
     scorer.save_results(all_results, output_file)
     
     # 打印汇总信息
