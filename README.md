@@ -79,6 +79,7 @@ paperscope/
 │       ├── eval_prompt.py        # 评估提示词
 │       ├── tool_filesearch.py    # 文件搜索工具
 │       ├── tool_search.py        # 网络搜索工具
+│       ├── tool_noretrieval.py   # 取消检索工具
 │       └── requirements.txt      # 依赖项
 └── output/                       # 输出目录
     ├── entities/                 # 提取的实体
@@ -357,5 +358,6 @@ Zhao Cao},
 <p align="center">
   <b>PaperScope</b> - Advancing Multi-modal Multi-document Scientific Reasoning
 </p>
+
 
 
