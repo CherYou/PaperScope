@@ -67,7 +67,7 @@ paperscope/
 │   ├── improved_article_selector.py       # 改进的文章选择器
 │   ├── performance_monitor.py    # 性能监控
 │   └── visualize_graph.py        # 图可视化
-├── qa_constructor/               # QA数据构建模块
+├── qas_constructor/               # QA数据构建模块
 │   ├── induction_data_constructor/   # 归纳数据构建
 │   ├── summary_data_constructor/     # 摘要数据构建
 │   └── solution_data_constructor/    # 解决方案数据构建
@@ -357,4 +357,5 @@ Zhao Cao},
 <p align="center">
   <b>PaperScope</b> - Advancing Multi-modal Multi-document Scientific Reasoning
 </p>
+
 
