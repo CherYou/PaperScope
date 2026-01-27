@@ -4,6 +4,7 @@
   <img src="https://img.shields.io/badge/Python-3.10+-blue.svg" alt="Python">
   <img src="https://img.shields.io/badge/PyTorch-2.7+-red.svg" alt="PyTorch">
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License">
+  <a href="https://huggingface.co/datasets/Youxll/PaperScope"><img src="https://img.shields.io/badge/🤗%20Hugging%20Face-Dataset-yellow.svg" alt="Dataset"></a>
 </p>
 
 **PaperScope** 是一个面向智能深度研究的多模态多文档科学推理基准测试平台。它旨在评估多模态大语言模型（MLLMs）在跨文档科学推理任务中的能力，填补了现有单文档理解基准测试的空白。
@@ -67,7 +68,7 @@ paperscope/
 │   ├── improved_article_selector.py       # 改进的文章选择器
 │   ├── performance_monitor.py    # 性能监控
 │   └── visualize_graph.py        # 图可视化
-├── qas_constructor/               # QA数据构建模块
+├── qa_constructor/               # QA数据构建模块
 │   ├── induction_data_constructor/   # 归纳数据构建
 │   ├── summary_data_constructor/     # 摘要数据构建
 │   └── solution_data_constructor/    # 解决方案数据构建
@@ -79,7 +80,6 @@ paperscope/
 │       ├── eval_prompt.py        # 评估提示词
 │       ├── tool_filesearch.py    # 文件搜索工具
 │       ├── tool_search.py        # 网络搜索工具
-│       ├── tool_noretrieval.py   # 取消检索工具
 │       └── requirements.txt      # 依赖项
 └── output/                       # 输出目录
     ├── entities/                 # 提取的实体
@@ -87,6 +87,21 @@ paperscope/
     ├── selected_papers/          # 选定的论文集
     └── visualizations/           # 可视化结果
 ```
+
+## 📦 数据集
+
+PaperScope 数据集已发布在 Hugging Face：
+
+🤗 **[Youxll/PaperScope](https://huggingface.co/datasets/Youxll/PaperScope)**
+
+```python
+from datasets import load_dataset
+
+# 加载数据集
+dataset = load_dataset("Youxll/PaperScope")
+```
+
+详细的数据格式说明请参阅 [data/README.md](data/README.md)。
 
 ## 🚀 快速开始
 
@@ -358,6 +373,4 @@ Zhao Cao},
 <p align="center">
   <b>PaperScope</b> - Advancing Multi-modal Multi-document Scientific Reasoning
 </p>
-
-
 
