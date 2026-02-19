@@ -28,5 +28,5 @@ Current date: """
 # {"type": "function", "function": {"name": "search", "description": "Search for relevant files in the web.", "parameters": {"type": "object", "properties": {"query": {"type": "string", "description": "The search query to find relevant documents in the web"}, "required": ["query"]}}}
 # </tools>
 # <tools>
-# {"type": "function", "function": {"name": "NoRetrievalTool", "description": "Directly retrieve pre-defined documents based on the original question without any retrieval process. Returns the parsed markdown documents corresponding to the question.", "parameters": {"type": "object", "properties": {"query": {"type": "string", "description": "The original question provided to the model"}, "required": ["query"]}}}
+# {"type": "function", "function": {"name": "NoRetrievalTool", "description": "Directly retrieve pre-defined documents based on the original question without any retrieval process. Returns the parsed markdown documents corresponding to the question.", "parameters": {"type": "object", "properties": {"question": {"type": "string", "description": "The original question provided to the model"}, "required": ["question"]}}}
 # </tools>
