@@ -348,15 +348,14 @@ PaperScope 针对不同任务类型采用不同的评估指标：
 如果您在研究中使用了 PaperScope，请引用：
 
 ```bibtex
-@article{paperscope2025,
-  title={PaperScope: A Multi-Modal Multi-Document Benchmark for Agentic Deep Research Across Massive Scientific Papers},
-  author={Lei Xiong,
-Huaying Yuan,
-Zheng Liu,
-Zhicheng Dou,
-Zhao Cao},
-  journal={arXiv preprint arXiv:xxxx.xxxxx},
-  year={2025}
+@misc{xiong2026paperscopemultimodalmultidocumentbenchmark,
+      title={PaperScope: A Multi-Modal Multi-Document Benchmark for Agentic Deep Research Across Massive Scientific Papers}, 
+      author={Lei Xiong and Huaying Yuan and Zheng Liu and Zhao Cao and Zhicheng Dou},
+      year={2026},
+      eprint={2604.11307},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2604.11307}, 
 }
 ```
 
