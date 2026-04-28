@@ -7,7 +7,7 @@
   <a href="https://huggingface.co/datasets/Youxll/PaperScope"><img src="https://img.shields.io/badge/🤗%20Hugging%20Face-Dataset-yellow.svg" alt="Dataset"></a>
 </p>
 
-**PaperScope** 是一个面向智能深度研究的多模态多文档科学推理基准测试平台。它旨在评估多模态大语言模型（MLLMs）在跨文档科学推理任务中的能力，填补了现有单文档理解基准测试的空白。
+**PaperScope** 是一个面向智能深度研究的多模态多文档科学推理基准测试平台。它旨在评估多模态大语言模型（MLLMs）在跨文档科学推理任务中的能力，填补了现有单文档理解基准测试的空白。（ACL 2026 Findings）
 
 ## 📋 概述
 
